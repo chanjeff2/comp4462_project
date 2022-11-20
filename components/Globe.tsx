@@ -89,7 +89,32 @@ export const Globe = (props: GlobeProps) => {
         .style('fill', (d, i) => '#e7e7e7')
         .style('stroke', '#121212')
         .style('stroke-width', 0.3)
-        .style("opacity", 0.8);
+        .style("opacity", 0.8)
+        .on("mouseover", function (e) {
+          if (d3.select(this).classed("clicked")) {
+            return;
+          }
+          d3.select(this).style("fill", "#cccccc");
+        })
+        .on("mouseout", function (e) {
+          if (d3.select(this).classed("clicked")) {
+            return;
+          }
+          d3.select(this).style("fill", "#e7e7e7");
+        })
+        .on("click", function (e) {
+          // if not yet selected
+          if (!d3.select(this).classed("clicked")) {
+            // cancel select other countries
+            d3.selectAll(".clicked").classed("clicked", false).style("fill", "#e7e7e7");
+            // select this country
+            d3.select(this).classed("clicked", true).style("fill", "red");
+          } else {
+            // cancel select all countries
+            d3.selectAll(".clicked").classed("clicked", false).style("fill", "#e7e7e7");
+          }
+        });
+
     })();
 
   }, [props]) // redraw chart if data changes
