@@ -59,9 +59,20 @@ export const Globe = (props: GlobeProps) => {
       ]);
       path = d3.geoPath().projection(projection)
       svg.selectAll("path").attr("d", path as any)
-    })
+    });
+    // zoom
+    const zoom: any = d3.zoom().on('zoom', (event, d) => {
+      if (event.transform.k <= 0.3) {
+        event.transform.k = 0.3
+        return;
+      }
+      projection.scale(initialScale * event.transform.k);
+      path = d3.geoPath().projection(projection);
+      svg.selectAll("path").attr("d", path as any);
+      globe.attr("r", projection.scale());
+    });
 
-    svg.call(drag);
+    svg.call(drag).call(zoom);
 
     // draw countries
     (async () => {
